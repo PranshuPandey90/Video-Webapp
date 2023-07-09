@@ -5,14 +5,12 @@ import "./style.css";
 const Webapp = () => {
   const videoRefs = useRef([]);
   const [currentVideo, setCurrentVideo] = useState();
-  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     if (currentVideo) {
-      currentVideo.muted = isMuted;
-      currentVideo.play();
+      currentVideo.muted = true;
     }
-  }, [currentVideo, isMuted]);
+  }, [currentVideo]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +23,7 @@ const Webapp = () => {
           rect.bottom >= window.innerHeight / 2;
 
         if (isVisible) {
-          setCurrentVideo(video);
+          video.play();
         } else {
           video.pause();
         }
@@ -41,7 +39,6 @@ const Webapp = () => {
   }, []);
 
   const handleVideoClick = (index) => {
-    console.log(index, "index");
     const clickedVideo = videoRefs.current[index];
     setCurrentVideo(clickedVideo);
     if (clickedVideo.paused) {
@@ -60,14 +57,14 @@ const Webapp = () => {
             className="video_wrapper  y mandatory-scroll-snapping"
             key={video.video_url.med + index}
             dir="ltr"
-            onClick={() => handleVideoClick(index)}
           >
-            <video
+            <video loop
               className="video_container"
               key={video.video_url.med}
               ref={(ref) => (videoRefs.current[index] = ref)}
               autoPlay={index === 0 ? true : false}
-              muted={index === 0 ? true : false}
+              muted={true}
+              onClick={() => handleVideoClick(index)}
             >
               <source
                 src={video.video_url.med}
