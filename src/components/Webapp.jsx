@@ -67,7 +67,6 @@ const Webapp = () => {
               <source
                 src={video.video_url.med}
                 type="video/mp4"
-                className="video"
               />
             </video>
           </div>
