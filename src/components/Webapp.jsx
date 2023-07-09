@@ -7,10 +7,10 @@ const Webapp = () => {
   const [currentVideo, setCurrentVideo] = useState();
 
   useEffect(() => {
-    console.log(currentVideo);
     if (currentVideo) {
+      currentVideo.muted = true;
       currentVideo.play();
-      currentVideo.muted = false;
+      
     }
   }, [currentVideo]);
 
@@ -37,18 +37,32 @@ const Webapp = () => {
     };
   }, []);
 
+  const handleVideoClick = (index) => {
+    const clickedVideo = videoRefs.current[index];
+    setCurrentVideo(clickedVideo);
+    if (clickedVideo.paused) {
+      clickedVideo.play();
+    } else {
+      clickedVideo.pause();
+    }
+  };
+
   return (
     <div className="container">
       {videoArr.map((arr, index) => {
         const recommendation = arr.data.recommendation;
         return recommendation.map((video, index) => (
-          <div className="video_wrapper" key={video.video_url.med + index}>
+          <div
+            className="wrap-video"
+            key={video.video_url.med + index}
+            onClick={() => handleVideoClick(index)}
+          >
             <video
-              className="video_container"
+              className="container-video"
               key={video.video_url.med}
               ref={(ref) => (videoRefs.current[index] = ref)}
-              controls={true}
-              autoPlay
+              autoPlay={index === 0 ? true : false}
+              muted={index === 0 ? true : false}
             >
               <source
                 src={video.video_url.med}
