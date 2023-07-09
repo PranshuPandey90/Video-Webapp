@@ -5,14 +5,14 @@ import "./style.css";
 const Webapp = () => {
   const videoRefs = useRef([]);
   const [currentVideo, setCurrentVideo] = useState();
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     if (currentVideo) {
-      currentVideo.muted = true;
+      currentVideo.muted = isMuted;
       currentVideo.play();
-      
     }
-  }, [currentVideo]);
+  }, [currentVideo, isMuted]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,6 +23,7 @@ const Webapp = () => {
         const isVisible =
           rect.top < window.innerHeight / 2 &&
           rect.bottom >= window.innerHeight / 2;
+
         if (isVisible) {
           setCurrentVideo(video);
         } else {
@@ -31,13 +32,16 @@ const Webapp = () => {
       });
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const container = document.querySelector(".container");
+
+    container.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      container.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   const handleVideoClick = (index) => {
+    console.log(index, "index");
     const clickedVideo = videoRefs.current[index];
     setCurrentVideo(clickedVideo);
     if (clickedVideo.paused) {
@@ -53,12 +57,13 @@ const Webapp = () => {
         const recommendation = arr.data.recommendation;
         return recommendation.map((video, index) => (
           <div
-            className="wrap-video"
+            className="video_wrapper  y mandatory-scroll-snapping"
             key={video.video_url.med + index}
+            dir="ltr"
             onClick={() => handleVideoClick(index)}
           >
             <video
-              className="container-video"
+              className="video_container"
               key={video.video_url.med}
               ref={(ref) => (videoRefs.current[index] = ref)}
               autoPlay={index === 0 ? true : false}
@@ -67,6 +72,7 @@ const Webapp = () => {
               <source
                 src={video.video_url.med}
                 type="video/mp4"
+                className="video"
               />
             </video>
           </div>
